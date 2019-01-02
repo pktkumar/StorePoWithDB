@@ -2,14 +2,19 @@ package kumar.test.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import kumar.test.DAO.ConnetDB;
 import kumar.test.DAO.ReturnValues;
+import kumar.test.exception.StorePoException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+
 
 @RestController
 public class MyController {
@@ -22,9 +27,10 @@ public class MyController {
 	//@RequestMapping("/")
 	@RequestMapping(value="/xml", method=RequestMethod.GET,produces=MediaType.APPLICATION_XML_VALUE)
 	
-	public List<ReturnValues> getDBWithXMLRequest(@RequestParam int skuNbr ){
+	public List<ReturnValues> getDBWithXMLRequest(@RequestParam int skuNbr )throws StorePoException{
 	
-	
+	try{
+		
 		
 		String returnVal="";
 		List<ReturnValues> returnValues=new ArrayList<ReturnValues>();
@@ -34,16 +40,28 @@ public class MyController {
 					returnVal=item.getPo_ctrl_nbr();
 					System.out.println(returnVal);
 				}
+				
+				return returnValues;
+				
+				
+	}catch(Exception e) {				
+		throw new StorePoException("Exception occurred in retrieving StorePOs : "+e.getMessage(), e);
+	}
+	
+		/*if(returnValues.size()<1)
+				return returnValues;
+		else
+			     return "NO DATA";*/
 		
-		return returnValues;
 			
 	}
 	
 	@RequestMapping(value="/json", method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)
+	public List<ReturnValues> getDBWithJSONRequest (@RequestParam int skuNbr )throws StorePoException{
 	
-	public List<ReturnValues> getDBWithJSONRequest(@RequestParam int skuNbr ){
 	
-	
+		try{
+			
 		
 		String returnVal="";
 		List<ReturnValues> returnValues=new ArrayList<ReturnValues>();
@@ -53,8 +71,12 @@ public class MyController {
 					returnVal=item.getPo_ctrl_nbr();
 					System.out.println(returnVal);
 				}
+				return returnValues;
+		}catch(Exception e) {				
+			throw new StorePoException("Exception occurred in retrieving StorePOs : "+e.getMessage(), e);
+		}
 		
-		return returnValues;
+		
 			
 	}
 	
